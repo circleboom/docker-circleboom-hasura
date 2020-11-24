@@ -23,7 +23,7 @@ services:
   caddy:
     image: caddy
     depends_on:
-    - "graphql-engine"
+    - hasura
     restart: always
     environment:
     - "CADDY_SITE_ADDRESS=${CADDY_SITE_ADDRESS}"   
