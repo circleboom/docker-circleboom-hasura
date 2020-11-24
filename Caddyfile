@@ -1,0 +1,11 @@
+# Add your domain to serve only https (recommended)
+# To do that, just replace :80 in your .env file with your domain name to get automatic https via LetsEncrypt.
+# Don't forget to set your DNS first as Caddy will automatically validate 
+# and create certificates for you as soon as it started.
+# graph.myawesomedomain.com {
+#   reverse_proxy hasura:8080
+# }
+
+{$CADDY_SITE_ADDRESS} {
+  reverse_proxy hasura:8080
+}

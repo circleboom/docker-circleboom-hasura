@@ -1,0 +1,39 @@
+version: '3.6'
+services:
+  hasura:
+    image: hasura/graphql-engine:v1.3.3
+    restart: always
+    environment:
+      # database url to connect
+      # HASURA_GRAPHQL_DATABASE_URL=postgres://username:password@hostname:port/dbname	
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_SERVER}:${POSTGRES_SERVER_PORT}/${POSTGRES_TARGET_DB}
+      ## enable the console served by server
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set "false" to disable console
+      ## enable debugging mode. It is recommended to disable this in production
+      HASURA_GRAPHQL_DEV_MODE: "false"
+      ## uncomment next line to set an admin secret
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}   
+      # Do or do not send telemetry to Hasura hq	
+      HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
+      # Auth DB Connection JWT Secret
+      # HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET}
+    command:
+    - graphql-engine
+    - serve
+  caddy:
+    image: caddy
+    depends_on:
+    - "graphql-engine"
+    restart: always
+    environment:
+    - "CADDY_SITE_ADDRESS=${CADDY_SITE_ADDRESS}"   
+    ports:
+    - "80:80"
+    - "443:443"
+    volumes:
+    - ./Caddyfile:/etc/caddy/Caddyfile
+    - caddy_data:/data
+    - caddy_config:/config
+volumes:
+  caddy_data:
+  caddy_config:
